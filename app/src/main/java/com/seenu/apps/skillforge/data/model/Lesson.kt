@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 data class Lesson(
     @SerialName("id") val id: String,
     @SerialName("title") val title: String,
-    @SerialName("duration") val duration: String,
-    @SerialName("videoUrl") val videoUrl: String? = null,
-    @SerialName("description") val description: String,
-    @SerialName("order") val order: Int
+    @SerialName("durationMinutes") val durationMinutes: Int,
+    @SerialName("isFree") val isFree: Boolean,
+    @SerialName("videoUrl") val videoUrl: String,
+    @SerialName("content") val content: String
 )

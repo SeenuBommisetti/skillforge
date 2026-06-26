@@ -1,0 +1,16 @@
+package com.seenu.apps.skillforge.data.model
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class SkillforgeResponse(
+    val meta: Meta,
+    val categories: List<Category>
+)
+
+@Serializable
+data class Meta(
+    val app: String,
+    val version: String,
+    val generatedAt: String
+)

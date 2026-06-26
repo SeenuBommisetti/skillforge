@@ -12,10 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.seenu.apps.skillforge.ui.screens.HomeScreen
+import com.seenu.apps.skillforge.ui.viewmodel.CourseViewModel
 
 @Composable
 fun SkillforgeNavHost(
@@ -28,7 +31,9 @@ fun SkillforgeNavHost(
         modifier = modifier
     ) {
         composable<Screen.CategoryList> {
-            CategoryListPlaceholder(
+            val viewModel: CourseViewModel = viewModel(factory = CourseViewModel.Factory)
+            HomeScreen(
+                viewModel = viewModel,
                 onNavigateToDetail = { courseId ->
                     navController.navigate(Screen.CourseDetail(courseId))
                 }
@@ -57,24 +62,6 @@ fun SkillforgeNavHost(
                     navController.popBackStack()
                 }
             )
-        }
-    }
-}
-
-@Composable
-fun CategoryListPlaceholder(
-    onNavigateToDetail: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Category List Screen (Placeholder)", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { onNavigateToDetail("course-123") }) {
-            Text("Navigate to Course 123 Details")
         }
     }
 }

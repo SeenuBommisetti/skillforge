@@ -10,7 +10,8 @@ class CourseRepositoryImpl(
     private val apiService: SkillforgeApiService,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : CourseRepository {
+
     override suspend fun getCategories(): List<Category> = withContext(ioDispatcher) {
-        apiService.getCategories()
+        apiService.getCategories().categories
     }
 }

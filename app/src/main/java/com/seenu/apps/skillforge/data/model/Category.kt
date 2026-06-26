@@ -8,6 +8,7 @@ data class Category(
     @SerialName("id") val id: String,
     @SerialName("name") val name: String,
     @SerialName("description") val description: String,
-    @SerialName("imageUrl") val imageUrl: String,
-    @SerialName("courses") val courses: List<Course> = emptyList()
+    @SerialName("iconColor") val iconColor: String,
+    @SerialName("courseCount") val courseCount: Int,
+    @SerialName("courses") val courses: List<Course>
 )
