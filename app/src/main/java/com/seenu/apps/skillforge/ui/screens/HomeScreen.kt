@@ -143,25 +143,31 @@ fun CategoryListContent(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .padding(vertical = 16.dp)
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Header Section
-        HeaderRow()
+        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+            HeaderRow()
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Search Bar
-        SearchBar(
-            query = searchQuery,
-            onQueryChange = { searchQuery = it }
-        )
+        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+            SearchBar(
+                query = searchQuery,
+                onQueryChange = { searchQuery = it }
+            )
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
         // Categories Section
-        SectionHeader(title = "Categories", onSeeAllClick = {})
+        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+            SectionHeader(title = "Categories", onSeeAllClick = {})
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -172,14 +178,18 @@ fun CategoryListContent(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Popular Courses Section
-        SectionHeader(title = "Popular courses", onSeeAllClick = {})
+        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+            SectionHeader(title = "Popular courses", onSeeAllClick = {})
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        CoursesVerticalList(
-            courses = filteredPopularCourses,
-            onCourseClick = onNavigateToDetail
-        )
+        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+            CoursesVerticalList(
+                courses = filteredPopularCourses,
+                onCourseClick = onNavigateToDetail
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
     }
@@ -343,9 +353,11 @@ fun CategoriesHorizontalList(
                 .horizontalScroll(scrollState),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Spacer(modifier = Modifier.width(8.dp)) // Aligns first item with 24dp (8 + 16 gap)
             categories.forEach { category ->
                 CategoryCard(category = category)
             }
+            Spacer(modifier = Modifier.width(8.dp))
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -371,7 +383,7 @@ fun CategoryCard(
     Column(
         modifier = modifier
             .width(164.dp)
-            .height(170.dp)
+            .height(172.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(Color.White)
             .border(1.dp, BorderColor, RoundedCornerShape(24.dp))
@@ -432,39 +444,39 @@ fun CustomScrollIndicator(
         // Left arrow
         Text(
             text = "◀",
-            color = TextSecondary.copy(alpha = 0.5f),
-            fontSize = 8.sp,
-            modifier = Modifier.padding(end = 10.dp)
+            color = Color(0xFFD1D1D6),
+            fontSize = 10.sp,
+            modifier = Modifier.padding(end = 12.dp)
         )
 
         // Indicator line / track
         Box(
             modifier = Modifier
-                .width(100.dp)
-                .height(4.dp)
-                .clip(RoundedCornerShape(2.dp))
-                .background(BorderColor)
+                .width(160.dp)
+                .height(8.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFE5E5EA))
         ) {
             // Slider thumb
-            val thumbWidth = 40.dp
-            val maxOffset = 60.dp // 100.dp - 40.dp
+            val thumbWidth = 60.dp
+            val maxOffset = 100.dp // 160.dp - 60.dp
             val currentOffset = maxOffset * progress
             Box(
                 modifier = Modifier
                     .width(thumbWidth)
-                    .height(4.dp)
+                    .height(8.dp)
                     .offset(x = currentOffset)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(TextSecondary)
+                    .clip(CircleShape)
+                    .background(Color(0xFF8E8E93))
             )
         }
 
         // Right arrow
         Text(
             text = "▶",
-            color = TextSecondary.copy(alpha = 0.5f),
-            fontSize = 8.sp,
-            modifier = Modifier.padding(start = 10.dp)
+            color = Color(0xFFD1D1D6),
+            fontSize = 10.sp,
+            modifier = Modifier.padding(start = 12.dp)
         )
     }
 }
