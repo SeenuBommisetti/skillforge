@@ -50,12 +50,7 @@ import coil.compose.AsyncImage
 import com.seenu.apps.skillforge.data.model.Category
 import com.seenu.apps.skillforge.data.model.Course
 import com.seenu.apps.skillforge.ui.theme.BorderColor
-import com.seenu.apps.skillforge.ui.theme.IconGreen
 import com.seenu.apps.skillforge.ui.theme.IconTeal
-import com.seenu.apps.skillforge.ui.theme.IconYellow
-import com.seenu.apps.skillforge.ui.theme.LightGreenBg
-import com.seenu.apps.skillforge.ui.theme.LightTealBg
-import com.seenu.apps.skillforge.ui.theme.LightYellowBg
 import com.seenu.apps.skillforge.ui.theme.PrimaryTeal
 import com.seenu.apps.skillforge.ui.theme.ScreenBackground
 import com.seenu.apps.skillforge.ui.theme.TagBeginner
@@ -64,6 +59,7 @@ import com.seenu.apps.skillforge.ui.theme.TextPrimary
 import com.seenu.apps.skillforge.ui.theme.TextSecondary
 import com.seenu.apps.skillforge.ui.viewmodel.CategoryUiState
 import com.seenu.apps.skillforge.ui.viewmodel.CourseViewModel
+import androidx.core.graphics.toColorInt
 
 @Composable
 fun HomeScreen(
@@ -110,7 +106,7 @@ fun CategoryListContent(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     val allCourses = remember(categories) {
-        categories.flatMap { it.courses }
+        categories.flatMap { it.courses }.distinctBy { it.id }
     }
 
     // Filter logic
@@ -129,14 +125,15 @@ fun CategoryListContent(
     }
 
     val filteredPopularCourses = remember(allCourses, searchQuery) {
-        if (searchQuery.isBlank()) {
-            allCourses.take(3)
+        val filtered = if (searchQuery.isBlank()) {
+            allCourses
         } else {
             allCourses.filter { course ->
                 course.title.contains(searchQuery, ignoreCase = true) ||
                         course.instructor.name.contains(searchQuery, ignoreCase = true)
             }
         }
+        filtered.sortedByDescending { it.studentsEnrolled }.take(5)
     }
 
     Column(
@@ -248,23 +245,15 @@ fun HeaderRow() {
             }
 
             // User Avatar
-            Box(
+            AsyncImage(
+                model = "https://ui-avatars.com/api/?name=Aarav+Sharma&size=150&background=2dd4bf&color=ffffff&bold=true&format=png",
+                contentDescription = "User Avatar",
                 modifier = Modifier
                     .size(52.dp)
                     .clip(CircleShape)
                     .background(PrimaryTeal),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "AS",
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    maxLines = 1,
-                    softWrap = false
-                )
-            }
+                contentScale = ContentScale.Crop
+            )
         }
     }
 }
@@ -374,10 +363,10 @@ fun CategoryCard(
     category: Category,
     modifier: Modifier = Modifier
 ) {
-    val colors = when {
-        category.name.contains("Android", ignoreCase = true) -> Triple(LightTealBg, IconTeal, "android")
-        category.name.contains("Backend", ignoreCase = true) -> Triple(LightGreenBg, IconGreen, "backend")
-        else -> Triple(LightYellowBg, IconYellow, "design")
+    val categoryColor = try {
+        Color(category.iconColor.toColorInt())
+    } catch (_: Exception) {
+        PrimaryTeal
     }
 
     Column(
@@ -394,7 +383,7 @@ fun CategoryCard(
             modifier = Modifier
                 .size(52.dp)
                 .clip(RoundedCornerShape(18.dp))
-                .background(colors.first),
+                .background(categoryColor.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center
         ) {
             // Inner solid color rounded box
@@ -402,7 +391,7 @@ fun CategoryCard(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(colors.second)
+                    .background(categoryColor)
             )
         }
 
@@ -616,26 +605,15 @@ fun CourseThumbnail(
             .height(76.dp)
             .clip(RoundedCornerShape(12.dp))
     ) {
-        val gradientBrush = when (course.id) {
-            "course_kotlin_101" -> Brush.linearGradient(
-                colors = listOf(Color(0xFF00A490), Color(0xFF008272))
-            )
-            "course_compose_201" -> Brush.linearGradient(
-                colors = listOf(Color(0xFF5B3FF2), Color(0xFF3F69F2))
-            )
-            "course_node_302" -> Brush.linearGradient(
-                colors = listOf(Color(0xFF22C55E), Color(0xFF16A34A))
-            )
-            else -> Brush.linearGradient(
-                colors = listOf(Color(0xFF0D9488), Color(0xFF0F766E))
-            )
-        }
+        val defaultGradient = Brush.linearGradient(
+            colors = listOf(PrimaryTeal, IconTeal)
+        )
 
         // Fallback gradient UI matching design circles and text
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(gradientBrush)
+                .background(defaultGradient)
         ) {
             // Circular decorative shapes
             Box(
@@ -652,12 +630,7 @@ fun CourseThumbnail(
             )
 
             Text(
-                text = when (course.id) {
-                    "course_kotlin_101" -> "Kotlin\nFundamentals"
-                    "course_compose_201" -> "Jetpack Compose\nEssentials"
-                    "course_node_302" -> "Node.js from\nScratch"
-                    else -> course.title
-                },
+                text = course.title,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 11.sp,
