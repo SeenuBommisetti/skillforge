@@ -22,7 +22,6 @@ A Kotlin Android application built as part of the Clickretina Android Developer 
 * API integration using Retrofit
 * Image loading using Coil
 * Loading and error state handling
-* Unit test for the repository layer
 
 ---
 
