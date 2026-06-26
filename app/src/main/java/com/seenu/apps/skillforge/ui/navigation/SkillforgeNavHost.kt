@@ -1,17 +1,7 @@
 package com.seenu.apps.skillforge.ui.navigation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.seenu.apps.skillforge.ui.screens.CourseDetailScreen
 import com.seenu.apps.skillforge.ui.screens.HomeScreen
+import com.seenu.apps.skillforge.ui.screens.LessonPlayerScreen
 import com.seenu.apps.skillforge.ui.viewmodel.CourseViewModel
 
 @Composable
@@ -58,36 +49,23 @@ fun SkillforgeNavHost(
 
         composable<Screen.LessonPlayer> { backStackEntry ->
             val route = backStackEntry.toRoute<Screen.LessonPlayer>()
-            LessonPlayerPlaceholder(
+            val viewModel: CourseViewModel = viewModel(factory = CourseViewModel.Factory)
+            LessonPlayerScreen(
                 courseId = route.courseId,
                 lessonId = route.lessonId,
+                viewModel = viewModel,
                 onBack = {
                     navController.popBackStack()
+                },
+                onNavigateToLesson = { newLessonId ->
+                    navController.navigate(Screen.LessonPlayer(route.courseId, newLessonId)) {
+                        popUpTo(Screen.LessonPlayer(route.courseId, route.lessonId)) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
     }
 }
 
-@Composable
-fun LessonPlayerPlaceholder(
-    courseId: String,
-    lessonId: String,
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Lesson Player Screen (Placeholder)", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Course ID: $courseId", style = MaterialTheme.typography.bodyLarge)
-        Text("Lesson ID: $lessonId", style = MaterialTheme.typography.bodyLarge)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onBack) {
-            Text("Back to Course Detail")
-        }
-    }
-}
