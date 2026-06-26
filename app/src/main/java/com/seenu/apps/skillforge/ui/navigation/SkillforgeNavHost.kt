@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.seenu.apps.skillforge.ui.screens.CourseDetailScreen
 import com.seenu.apps.skillforge.ui.screens.HomeScreen
 import com.seenu.apps.skillforge.ui.viewmodel.CourseViewModel
 
@@ -42,8 +43,10 @@ fun SkillforgeNavHost(
 
         composable<Screen.CourseDetail> { backStackEntry ->
             val route = backStackEntry.toRoute<Screen.CourseDetail>()
-            CourseDetailPlaceholder(
+            val viewModel: CourseViewModel = viewModel(factory = CourseViewModel.Factory)
+            CourseDetailScreen(
                 courseId = route.courseId,
+                viewModel = viewModel,
                 onNavigateToPlayer = { lessonId ->
                     navController.navigate(Screen.LessonPlayer(route.courseId, lessonId))
                 },
@@ -62,32 +65,6 @@ fun SkillforgeNavHost(
                     navController.popBackStack()
                 }
             )
-        }
-    }
-}
-
-@Composable
-fun CourseDetailPlaceholder(
-    courseId: String,
-    onNavigateToPlayer: (String) -> Unit,
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Course Detail Screen (Placeholder)", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Course ID: $courseId", style = MaterialTheme.typography.bodyLarge)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { onNavigateToPlayer("lesson-456") }) {
-            Text("Play Lesson 456")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = onBack) {
-            Text("Back")
         }
     }
 }

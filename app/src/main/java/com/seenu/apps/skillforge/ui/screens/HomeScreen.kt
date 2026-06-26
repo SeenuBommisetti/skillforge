@@ -513,10 +513,10 @@ fun CourseCard(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            val tagColor = when (course.level) {
-                "BEGINNER" -> TagBeginner
-                "INTERMEDIATE" -> TagIntermediate
-                else -> Color.Red
+            val tagColor = when {
+                course.level.contains("Beginner", ignoreCase = true) -> TagBeginner
+                course.level.contains("Intermediate", ignoreCase = true) -> TagIntermediate
+                else -> TagBeginner
             }
 
             Text(
@@ -605,13 +605,13 @@ fun CourseThumbnail(
             .clip(RoundedCornerShape(12.dp))
     ) {
         val gradientBrush = when (course.id) {
-            "course-kotlin-fundamentals" -> Brush.linearGradient(
+            "course_kotlin_101" -> Brush.linearGradient(
                 colors = listOf(Color(0xFF00A490), Color(0xFF008272))
             )
-            "course-compose-essentials" -> Brush.linearGradient(
+            "course_compose_201" -> Brush.linearGradient(
                 colors = listOf(Color(0xFF5B3FF2), Color(0xFF3F69F2))
             )
-            "course-node-scratch" -> Brush.linearGradient(
+            "course_node_302" -> Brush.linearGradient(
                 colors = listOf(Color(0xFF22C55E), Color(0xFF16A34A))
             )
             else -> Brush.linearGradient(
@@ -641,9 +641,9 @@ fun CourseThumbnail(
 
             Text(
                 text = when (course.id) {
-                    "course-kotlin-fundamentals" -> "Kotlin\nFundamentals"
-                    "course-compose-essentials" -> "Jetpack Compose\nEssentials"
-                    "course-node-scratch" -> "Node.js from\nScratch"
+                    "course_kotlin_101" -> "Kotlin\nFundamentals"
+                    "course_compose_201" -> "Jetpack Compose\nEssentials"
+                    "course_node_302" -> "Node.js from\nScratch"
                     else -> course.title
                 },
                 color = Color.White,
